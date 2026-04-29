@@ -5,7 +5,12 @@ variable "resource_group_name" {
 
 variable "location" {
   type        = string
-  description = "Location of the Storage account"
+  description = "The Azure region where all resources will be deployed."
+}
+
+variable "resource_owner_object_id" {
+  type        = string
+  description = "The object ID of the principal (user, group, or managed identity) that will be assigned as the owner of the underlying resources."
 }
 
 variable "log_analytics_workspace" {
@@ -15,27 +20,21 @@ variable "log_analytics_workspace" {
     sku                             = optional(string, "PerGB2018")
     tags                            = optional(map(string), {})
   })
+  description = <<DESCRIPTION
+    Configure the Log Analytics Workspace for centralised log collection and monitoring.
+
+    The following arguments are supported:
+
+    - `name` - (Required) The name of the Log Analytics Workspace.
+    - `allow_resource_only_permissions` - (Optional) Whether users can access log data for resources they have read access to, without needing explicit workspace permissions. Defaults to `false`.
+    - `sku` - (Optional) The pricing tier of the workspace. Defaults to `PerGB2018`.
+    - `tags` - (Optional) A map of tags to assign to the workspace.
+  DESCRIPTION
 }
 
 variable "tenant_id" {
   type        = string
   description = "The tenant ID of the Azure subscription."
-  default     = null
-}
-
-variable "key_vault" {
-  type = object({
-    name                = optional(string)
-    cmk_expiration_date = optional(string)
-  })
-  description = <<DESCRIPTION
-    Create a new Key Vault for CMK. You can also use an existing Key Vault by setting the `cmk_key_vault_id` in the `storage_account` variable.
-
-    The following arguments are supported:
-    
-    - `name` - (Optional) The name of the Key Vault. Defaults to null.
-    - `cmk_expiration_date` - (Optional) The expiration date of the customer-managed key. Defaults to null.
-  DESCRIPTION
   default     = null
 }
 
@@ -119,8 +118,47 @@ variable "table_names_to_export" {
   default     = null
 }
 
+variable "event_hub_namespace" {
+  type = object({
+    name     = string
+    sku      = optional(string, "Standard")
+    capacity = optional(number, 2)
+    hub_name = string
+    customer_managed_key = optional(object({
+      key_vault_id = string
+      key_name     = optional(string, "cmkrsa")
+    }), null)
+    hub_authorization_rules = optional(map(object({
+      listen = bool
+      send   = bool
+      manage = bool
+    })), null)
+    hub_consumer_groups = optional(set(string))
+    tags                = optional(map(string), {})
+  })
+  description = <<DESCRIPTION
+    Configure an optional Event Hub Namespace for streaming logs to downstream consumers such as SIEM solutions.
+
+    The following arguments are supported:
+
+    - `name` - (Required) The name of the Event Hub Namespace.
+    - `sku` - (Optional) The pricing tier of the Event Hub Namespace. Defaults to `Premium`.
+    - `capacity` - (Optional) The throughput units for the Event Hub Namespace. Defaults to `2`.
+    - `hub_name` - (Required) The name of the Event Hub to create within the namespace.
+    - `cmk_key_vault_id` - (Required) The ID of the Key Vault containing the customer-managed key used for namespace encryption.
+    - `cmk_key_name` - (Optional) The name of the customer-managed key in the Key Vault. Defaults to `cmkrsa`.
+    - `hub_authorization_rules` - (Optional) A map of additional authorization rules for the Event Hub. A built-in `diagnostics-settings-policy` send-only rule is always created. Each rule supports:
+      - `listen` - Whether the rule grants listen access.
+      - `send` - Whether the rule grants send access.
+      - `manage` - Whether the rule grants manage access (implies listen and send).
+    - `hub_consumer_groups` - (Optional) A set of names of consumer groups to create on the Event Hub.
+    - `tags` - (Optional) A map of tags to assign to the Event Hub Namespace.
+  DESCRIPTION
+  default     = null
+}
+
 variable "tags" {
   description = "A map of tags to assign to the resource."
   type        = map(string)
   default     = {}
-} 
+}
