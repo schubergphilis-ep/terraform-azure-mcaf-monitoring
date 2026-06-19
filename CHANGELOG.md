@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.5.0](https://github.com/schubergphilis-ep/terraform-azure-mcaf-monitoring/compare/v0.4.1...v0.5.0) (2026-06-19)
+
+
+### 🚀 Features
+
+* allow to configure retention_in_days on the log analytics workspace, default to 30 ([#2](https://github.com/schubergphilis-ep/terraform-azure-mcaf-monitoring/issues/2)) ([105a0bb](https://github.com/schubergphilis-ep/terraform-azure-mcaf-monitoring/commit/105a0bb3188748c765926536d616663ee7422d79))
+
 ## [0.4.1](https://github.com/schubergphilis-ep/terraform-azure-mcaf-monitoring/compare/v0.4.0...v0.4.1) (2025-05-22)
 
 
@@ -51,4 +58,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Storage Account ([#5](https://github.com/schubergphilis/terraform-azure-mcaf-monitoring/pull/5)) ([bfd1138](https://github.com/schubergphilis-ep/terraform-azure-mcaf-monitoring/commit/bfd11386cb8fb411afc74c7d56c99aa9a5382b8d))
 * add initial terraform module config ([#2](https://github.com/schubergphilis/terraform-azure-mcaf-monitoring/pull/2)) ([87ac41e](https://github.com/schubergphilis-ep/terraform-azure-mcaf-monitoring/commit/87ac41e623e1a49d0fa4c056783ef1605b11c2ee))
-
