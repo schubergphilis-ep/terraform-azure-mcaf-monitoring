@@ -15,6 +15,7 @@ resource "azurerm_log_analytics_workspace" "this" {
   location                        = var.location
   allow_resource_only_permissions = var.log_analytics_workspace.allow_resource_only_permissions
   sku                             = var.log_analytics_workspace.sku
+  retention_in_days               = var.log_analytics_workspace.retention_in_days
   tags = merge(
     try(var.tags),
     try(var.log_analytics_workspace.tags),
