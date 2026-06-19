@@ -13,6 +13,7 @@ variable "log_analytics_workspace" {
     name                            = string
     allow_resource_only_permissions = optional(bool, false)
     sku                             = optional(string, "PerGB2018")
+    retention_in_days               = optional(number, 30)
     tags                            = optional(map(string), {})
   })
 }
