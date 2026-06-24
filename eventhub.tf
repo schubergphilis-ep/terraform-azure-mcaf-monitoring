@@ -6,9 +6,17 @@ resource "azurerm_user_assigned_identity" "eventhub_namespace_mid" {
   tags                = var.tags
 }
 
+resource "azurerm_role_assignment" "eventhub_namespace_key_vault_crypto_user" {
+  count                            = var.event_hub_namespace != null && var.event_hub_namespace.customer_managed_key != null ? 1 : 0
+  principal_id                     = azurerm_user_assigned_identity.eventhub_namespace_mid[0].principal_id
+  scope                            = var.event_hub_namespace.customer_managed_key.key_vault_id
+  role_definition_name             = "Key Vault Crypto Service Encryption User"
+  skip_service_principal_aad_check = false
+}
+
 module "eventhub_namespace" {
-  source = "github.com/schubergphilis/terraform-azure-mcaf-eventhub.git?ref=feat-deploy-hubs-support-cmk"
-  count        = var.event_hub_namespace != null ? 1 : 0
+  source = "github.com/schubergphilis-ep/terraform-azure-mcaf-eventhub.git?ref=v0.2.0"
+  count  = var.event_hub_namespace != null ? 1 : 0
 
   eventhub_namespace_name     = var.event_hub_namespace.name
   resource_group_name         = var.resource_group_name
@@ -49,6 +57,8 @@ module "eventhub_namespace" {
     var.tags,
     var.event_hub_namespace.tags
   )
+
+  depends_on = [azurerm_role_assignment.eventhub_namespace_key_vault_crypto_user]
 }
 
 data "azuread_service_principal" "windows_azure_security_resource_provider" {

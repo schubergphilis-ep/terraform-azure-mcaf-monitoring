@@ -49,7 +49,6 @@ variable "storage_account" {
     cmk_key_vault_id                  = optional(string, null)
     cmk_key_name                      = optional(string, "cmkrsa")
     system_assigned_identity_enabled  = optional(bool, true)
-    user_assigned_identities          = optional(set(string), [])
     immutability_policy = optional(object({
       state                         = optional(string, "Unlocked")
       allow_protected_append_writes = optional(bool, true)
@@ -87,7 +86,6 @@ variable "storage_account" {
     - `cmk_key_vault_id` - (Optional) The ID of the Key Vault containing the customer-managed key. Defaults to null.
     - `cmk_key_name` - (Optional) The name of the customer-managed key in the Key Vault. Defaults to null.
     - `system_assigned_identity_enabled` - (Optional) Whether a system-assigned identity is enabled. Defaults to false.
-    - `user_assigned_identities` - (Optional) A set of user-assigned identities.
     - `immutability_policy` - (Optional) Immutability policy configuration. If undefined will not create a Immutability Policy
       - `state` - (Optional) The state of the immutability policy. Defaults to `Unlocked`.
       - `allow_protected_append_writes` - (Optional) Whether protected append writes are allowed. Defaults to true.

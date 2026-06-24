@@ -14,6 +14,22 @@ resource "azurerm_log_analytics_workspace" "this" {
   )
 }
 
+resource "azurerm_user_assigned_identity" "storage_account_mid" {
+  count               = var.storage_account != null ? 1 : 0
+  name                = var.storage_account.name
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  tags                = var.tags
+}
+
+resource "azurerm_role_assignment" "storage_account_key_vault_crypto_user" {
+  count                            = var.storage_account != null ? 1 : 0
+  principal_id                     = azurerm_user_assigned_identity.storage_account_mid[0].principal_id
+  scope                            = var.storage_account.cmk_key_vault_id
+  role_definition_name             = "Key Vault Crypto Service Encryption User"
+  skip_service_principal_aad_check = false
+}
+
 module "storage_account" {
   source = "github.com/schubergphilis/terraform-azure-mcaf-storage-account.git?ref=v0.11.0"
   count  = var.storage_account != null ? 1 : 0
@@ -30,7 +46,7 @@ module "storage_account" {
   cmk_key_vault_id                  = var.storage_account.cmk_key_vault_id
   cmk_key_name                      = var.storage_account.cmk_key_name
   system_assigned_identity_enabled  = var.storage_account.system_assigned_identity_enabled
-  user_assigned_identities          = var.storage_account.user_assigned_identities
+  user_assigned_identities          = [azurerm_user_assigned_identity.storage_account_mid[0].id] // Note: The first identity is also always used for key vault access
   immutability_policy               = var.storage_account.immutability_policy
   network_configuration             = var.storage_account.network_configuration
   storage_management_policy         = var.storage_account.storage_management_policy
@@ -38,6 +54,8 @@ module "storage_account" {
     var.tags,
     var.storage_account.tags
   )
+
+  depends_on = [azurerm_role_assignment.storage_account_key_vault_crypto_user]
 }
 
 resource "azurerm_log_analytics_data_export_rule" "this" {
