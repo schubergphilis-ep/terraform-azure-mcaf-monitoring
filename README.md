@@ -22,7 +22,7 @@ The module default for storage account replication type defaults to GRS because 
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_key_vault"></a> [key\_vault](#module\_key\_vault) | github.com/schubergphilis/terraform-azure-mcaf-key-vault | v1.0.1 |
-| <a name="module_storage_account"></a> [storage\_account](#module\_storage\_account) | github.com/schubergphilis/terraform-azure-mcaf-storage-account.git | v0.8.4 |
+| <a name="module_storage_account"></a> [storage\_account](#module\_storage\_account) | schubergphilis-ep/mcaf-storage-account/azure | 0.8.4 |
 
 ## Resources
 
