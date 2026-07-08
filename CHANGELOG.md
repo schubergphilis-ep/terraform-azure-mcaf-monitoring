@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.0](https://github.com/schubergphilis-ep/terraform-azure-mcaf-monitoring/compare/v0.5.0...v1.0.0) (2026-07-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* Add deployment of eventhub namespace ([#5](https://github.com/schubergphilis-ep/terraform-azure-mcaf-monitoring/issues/5))
+
+### 🚀 Features
+
+* Add deployment of eventhub namespace ([#5](https://github.com/schubergphilis-ep/terraform-azure-mcaf-monitoring/issues/5)) ([e721726](https://github.com/schubergphilis-ep/terraform-azure-mcaf-monitoring/commit/e72172646a6bc8a291c664e14957f39783197e1c))
+
 ## [0.5.0](https://github.com/schubergphilis-ep/terraform-azure-mcaf-monitoring/compare/v0.4.1...v0.5.0) (2026-06-19)
 
 
