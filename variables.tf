@@ -33,12 +33,6 @@ variable "log_analytics_workspace" {
   DESCRIPTION
 }
 
-variable "tenant_id" {
-  type        = string
-  description = "The tenant ID of the Azure subscription."
-  default     = null
-}
-
 variable "storage_account" {
   type = object({
     name                              = string

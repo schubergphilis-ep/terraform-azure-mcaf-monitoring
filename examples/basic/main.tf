@@ -47,7 +47,6 @@ module "with_storage_account" {
 
   table_names_to_export = ["AzureActivity"]
 
-  tenant_id = "00000000-0000-0000-0000-000000000000"
   location  = "West Europe"
   tags      = {}
 }
