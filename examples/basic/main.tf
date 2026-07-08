@@ -47,6 +47,6 @@ module "with_storage_account" {
 
   table_names_to_export = ["AzureActivity"]
 
-  location  = "West Europe"
-  tags      = {}
+  location = "West Europe"
+  tags     = {}
 }
