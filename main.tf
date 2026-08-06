@@ -31,8 +31,9 @@ resource "azurerm_role_assignment" "storage_account_key_vault_crypto_user" {
 }
 
 module "storage_account" {
-  source = "github.com/schubergphilis/terraform-azure-mcaf-storage-account.git?ref=v0.11.0"
-  count  = var.storage_account != null ? 1 : 0
+  count   = var.storage_account != null ? 1 : 0
+  source  = "schubergphilis-ep/mcaf-storage-account/azure"
+  version = "0.11.0"
 
   name                              = var.storage_account.name
   location                          = var.location
