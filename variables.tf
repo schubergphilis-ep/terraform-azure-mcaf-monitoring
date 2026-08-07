@@ -40,8 +40,7 @@ variable "storage_account" {
     account_replication_type          = optional(string, "GRS")
     access_tier                       = optional(string, "Cool")
     infrastructure_encryption_enabled = optional(bool, true)
-    cmk_key_vault_id                  = optional(string, null)
-    cmk_key_name                      = optional(string, "cmkrsa")
+    cmk_key_vault_key_id                  = optional(string, null)
     system_assigned_identity_enabled  = optional(bool, true)
     immutability_policy = optional(object({
       state                         = optional(string, "Unlocked")
