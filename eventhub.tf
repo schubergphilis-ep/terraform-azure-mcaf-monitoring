@@ -15,7 +15,8 @@ resource "azurerm_role_assignment" "eventhub_namespace_key_vault_crypto_user" {
 }
 
 module "eventhub_namespace" {
-  source = "github.com/schubergphilis-ep/terraform-azure-mcaf-eventhub.git?ref=v0.2.0"
+  source  = "schubergphilis-ep/mcaf-eventhub/azure"
+  version = "0.2.0"
   count  = var.event_hub_namespace != null ? 1 : 0
 
   eventhub_namespace_name     = var.event_hub_namespace.name
@@ -36,13 +37,23 @@ module "eventhub_namespace" {
     public_network_access_enabled  = false
     trusted_service_access_enabled = true
   }
+  eventhub_namespace_authorization_rules = merge(
+    {
+      "diagnostics-settings-policy" = {
+        listen = false
+        send   = true
+        manage = false
+      }
+    },
+    var.event_hub_namespace.namespace_authorization_rules
+  )
   event_hubs = {
     (var.event_hub_namespace.hub_name) = {
       partition_count   = 4
       message_retention = 7
       authorization_rules = merge(
         {
-          "diagnostics-settings-policy" = {
+          "defender-export-policy" = {
             listen = false
             send   = true
             manage = false
