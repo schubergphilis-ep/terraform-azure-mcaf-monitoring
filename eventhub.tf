@@ -29,7 +29,7 @@ module "eventhub_namespace" {
 
   eventhub_namespace_customer_managed_key = var.event_hub_namespace.customer_managed_key != null ? {
     user_assigned_identity_id         = azurerm_user_assigned_identity.eventhub_namespace_mid[0].id
-    key_vault_key_id                      = var.event_hub_namespace.customer_managed_key.key_vault_key_id
+    key_vault_key_id                  = var.event_hub_namespace.customer_managed_key.key_vault_key_id
     infrastructure_encryption_enabled = true
   } : null
   eventhub_namespace_network_ruleset = {

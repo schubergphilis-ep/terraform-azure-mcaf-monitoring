@@ -23,8 +23,9 @@ module "without_storage_account" {
     name = "example-log-analytics-workspace"
   }
 
-  location = "West Europe"
-  tags     = {}
+  location                 = "West Europe"
+  tags                     = {}
+  resource_owner_object_id = "00000000-0000-0000-0000-000000000000"
 }
 
 module "with_storage_account" {
@@ -40,13 +41,14 @@ module "with_storage_account" {
     name                     = "examplestorageaccount"
     access_tier              = "Cool"
     account_replication_type = "ZRS"
-    cmk_key_vault_id         = "Resource ID of the Key Vault"
+    cmk_key                  = { key_vault_key_id = "Resource ID of the Key Vault" }
     log_retention_days       = 1095 # 3 Years
     snapshot_retention_days  = 90
   }
 
   table_names_to_export = ["AzureActivity"]
 
-  location = "West Europe"
-  tags     = {}
+  location                 = "West Europe"
+  tags                     = {}
+  resource_owner_object_id = "00000000-0000-0000-0000-000000000000"
 }
