@@ -25,7 +25,7 @@ resource "azurerm_user_assigned_identity" "storage_account_mid" {
 resource "azurerm_role_assignment" "storage_account_key_vault_crypto_user" {
   count                            = var.storage_account != null ? 1 : 0
   principal_id                     = azurerm_user_assigned_identity.storage_account_mid[0].principal_id
-  scope                            = var.storage_account.cmk_key_vault_id
+  scope                            = var.storage_account.cmk_key_vault_key_id
   role_definition_name             = "Key Vault Crypto Service Encryption User"
   skip_service_principal_aad_check = false
 }
@@ -33,7 +33,7 @@ resource "azurerm_role_assignment" "storage_account_key_vault_crypto_user" {
 module "storage_account" {
   count   = var.storage_account != null ? 1 : 0
   source  = "schubergphilis-ep/mcaf-storage-account/azure"
-  version = "0.11.0"
+  version = "3.0.0"
 
   name                              = var.storage_account.name
   location                          = var.location
@@ -44,8 +44,7 @@ module "storage_account" {
   access_tier                       = var.storage_account.access_tier
   infrastructure_encryption_enabled = var.storage_account.infrastructure_encryption_enabled
   enable_cmk_encryption             = true
-  cmk_key_vault_id                  = var.storage_account.cmk_key_vault_id
-  cmk_key_name                      = var.storage_account.cmk_key_name
+  cmk_key                           = { key_vault_key_id = var.storage_account.cmk_key_vault_key_id }
   system_assigned_identity_enabled  = var.storage_account.system_assigned_identity_enabled
   user_assigned_identities          = [azurerm_user_assigned_identity.storage_account_mid[0].id] // Note: The first identity is also always used for key vault access
   immutability_policy               = var.storage_account.immutability_policy

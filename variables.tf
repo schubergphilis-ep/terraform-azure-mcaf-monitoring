@@ -40,8 +40,7 @@ variable "storage_account" {
     account_replication_type          = optional(string, "GRS")
     access_tier                       = optional(string, "Cool")
     infrastructure_encryption_enabled = optional(bool, true)
-    cmk_key_vault_id                  = optional(string, null)
-    cmk_key_name                      = optional(string, "cmkrsa")
+    cmk_key_vault_key_id              = optional(string, null)
     system_assigned_identity_enabled  = optional(bool, true)
     immutability_policy = optional(object({
       state                         = optional(string, "Unlocked")
@@ -118,9 +117,13 @@ variable "event_hub_namespace" {
     capacity = optional(number, 2)
     hub_name = string
     customer_managed_key = optional(object({
-      key_vault_id = string
-      key_name     = optional(string, "cmkrsa")
+      key_vault_key_id = string
     }), null)
+    namespace_authorization_rules = optional(map(object({
+      listen = bool
+      send   = bool
+      manage = bool
+    })), null)
     hub_authorization_rules = optional(map(object({
       listen = bool
       send   = bool
@@ -140,6 +143,11 @@ variable "event_hub_namespace" {
     - `hub_name` - (Required) The name of the Event Hub to create within the namespace.
     - `cmk_key_vault_id` - (Required) The ID of the Key Vault containing the customer-managed key used for namespace encryption.
     - `cmk_key_name` - (Optional) The name of the customer-managed key in the Key Vault. Defaults to `cmkrsa`.
+    - `namespace_authorization_rules` - (Optional) A map of additional authorization rules for the Event Hub. A built-in `diagnostics-settings-policy` send-only rule is always created. Each rule supports:
+      - `listen` - Whether the rule grants listen access.
+      - `send` - Whether the rule grants send access.
+      - `manage` - Whether the rule grants manage access (implies listen and send).
+    - `hub_consumer_groups` - (Optional) A set of names of consumer groups to create on the Event Hub.
     - `hub_authorization_rules` - (Optional) A map of additional authorization rules for the Event Hub. A built-in `diagnostics-settings-policy` send-only rule is always created. Each rule supports:
       - `listen` - Whether the rule grants listen access.
       - `send` - Whether the rule grants send access.
