@@ -118,8 +118,7 @@ variable "event_hub_namespace" {
     capacity = optional(number, 2)
     hub_name = string
     customer_managed_key = optional(object({
-      key_vault_id = string
-      key_name     = optional(string, "cmkrsa")
+      key_vault_key_id = string
     }), null)
     namespace_authorization_rules = optional(map(object({
       listen = bool
