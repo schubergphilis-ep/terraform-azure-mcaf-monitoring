@@ -118,6 +118,7 @@ variable "event_hub_namespace" {
     hub_name = string
     customer_managed_key = optional(object({
       key_vault_key_id = string
+      key_vault_key_resource_versionless_id = string
     }), null)
     namespace_authorization_rules = optional(map(object({
       listen = bool
