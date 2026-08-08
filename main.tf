@@ -25,7 +25,7 @@ resource "azurerm_user_assigned_identity" "storage_account_mid" {
 resource "azurerm_role_assignment" "storage_account_key_vault_crypto_user" {
   count                            = var.storage_account != null ? 1 : 0
   principal_id                     = azurerm_user_assigned_identity.storage_account_mid[0].principal_id
-  scope                            = var.storage_account.cmk_key_vault_key_id
+  scope                            = var.storage_account.cmk_key_vault_key_resource_versionless_id
   role_definition_name             = "Key Vault Crypto Service Encryption User"
   skip_service_principal_aad_check = false
 }
