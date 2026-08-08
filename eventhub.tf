@@ -9,7 +9,7 @@ resource "azurerm_user_assigned_identity" "eventhub_namespace_mid" {
 resource "azurerm_role_assignment" "eventhub_namespace_key_vault_crypto_user" {
   count                            = var.event_hub_namespace != null && var.event_hub_namespace.customer_managed_key != null ? 1 : 0
   principal_id                     = azurerm_user_assigned_identity.eventhub_namespace_mid[0].principal_id
-  scope                            = var.event_hub_namespace.customer_managed_key.key_vault_key_id
+  scope                            = var.event_hub_namespace.customer_managed_key.key_vault_key_resource_versionless_id
   role_definition_name             = "Key Vault Crypto Service Encryption User"
   skip_service_principal_aad_check = false
 }
