@@ -35,12 +35,13 @@ variable "log_analytics_workspace" {
 
 variable "storage_account" {
   type = object({
-    name                              = string
-    account_tier                      = optional(string, "Standard")
-    account_replication_type          = optional(string, "GRS")
-    access_tier                       = optional(string, "Cool")
-    infrastructure_encryption_enabled = optional(bool, true)
-    cmk_key_vault_key_id              = optional(string, null)
+    name                                      = string
+    account_tier                              = optional(string, "Standard")
+    account_replication_type                  = optional(string, "GRS")
+    access_tier                               = optional(string, "Cool")
+    infrastructure_encryption_enabled         = optional(bool, true)
+    cmk_key_vault_key_id                      = optional(string, null)
+    cmk_key_vault_key_resource_versionless_id = optional(string, null)
     system_assigned_identity_enabled  = optional(bool, true)
     immutability_policy = optional(object({
       state                         = optional(string, "Unlocked")
