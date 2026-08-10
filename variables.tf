@@ -42,7 +42,7 @@ variable "storage_account" {
     infrastructure_encryption_enabled         = optional(bool, true)
     cmk_key_vault_key_id                      = optional(string, null)
     cmk_key_vault_key_resource_versionless_id = optional(string, null)
-    system_assigned_identity_enabled  = optional(bool, true)
+    system_assigned_identity_enabled          = optional(bool, true)
     immutability_policy = optional(object({
       state                         = optional(string, "Unlocked")
       allow_protected_append_writes = optional(bool, true)
@@ -118,7 +118,7 @@ variable "event_hub_namespace" {
     capacity = optional(number, 2)
     hub_name = string
     customer_managed_key = optional(object({
-      key_vault_key_id = string
+      key_vault_key_id                      = string
       key_vault_key_resource_versionless_id = string
     }), null)
     namespace_authorization_rules = optional(map(object({
