@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.1](https://github.com/schubergphilis-ep/terraform-azure-mcaf-monitoring/compare/v2.0.0...v2.0.1) (2026-08-10)
+
+
+### 🐛 Fixes
+
+* Fixed RBAC assignments by setting the resource_versionless_id as scope ([#10](https://github.com/schubergphilis-ep/terraform-azure-mcaf-monitoring/issues/10)) ([d1a8c6e](https://github.com/schubergphilis-ep/terraform-azure-mcaf-monitoring/commit/d1a8c6e5750b222b893e6e76b1fdaa2529662000))
+
 ## [2.0.0](https://github.com/schubergphilis-ep/terraform-azure-mcaf-monitoring/compare/v1.0.0...v2.0.0) (2026-08-07)
 
 
