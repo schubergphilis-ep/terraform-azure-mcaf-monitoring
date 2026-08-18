@@ -32,10 +32,7 @@ module "eventhub_namespace" {
     key_vault_key_id                  = var.event_hub_namespace.customer_managed_key.key_vault_key_id
     infrastructure_encryption_enabled = true
   } : null
-  eventhub_namespace_network_ruleset = {
-    public_network_access_enabled  = false
-    trusted_service_access_enabled = true
-  }
+  eventhub_namespace_network_ruleset = var.event_hub_namespace.network_ruleset
   eventhub_namespace_authorization_rules = merge(
     {
       "diagnostics-settings-policy" = {
