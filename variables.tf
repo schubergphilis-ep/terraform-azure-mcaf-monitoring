@@ -119,7 +119,7 @@ variable "event_hub_namespace" {
     network_ruleset = optional(object({
       public_network_access_enabled  = optional(bool, false)
       default_action                 = optional(string, null)
-      trusted_service_access_enabled = optional(bool, false)
+      trusted_service_access_enabled = optional(bool, true)
       ip_rules = optional(list(object({
         ip_mask = string
         action  = optional(string, "Allow")
