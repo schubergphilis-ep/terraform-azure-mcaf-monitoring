@@ -116,6 +116,19 @@ variable "event_hub_namespace" {
     name     = string
     sku      = optional(string, "Standard")
     capacity = optional(number, 2)
+    network_ruleset = optional(object({
+      public_network_access_enabled  = optional(bool, false)
+      default_action                 = optional(string, null)
+      trusted_service_access_enabled = optional(bool, false)
+      ip_rules = optional(list(object({
+        ip_mask = string
+        action  = optional(string, "Allow")
+      })), [])
+      virtual_network_rules = optional(list(object({
+        subnet_id                                       = string
+        ignore_missing_virtual_network_service_endpoint = optional(bool, false)
+      })), [])
+    }), {})
     hub_name = string
     customer_managed_key = optional(object({
       key_vault_key_id                      = string
