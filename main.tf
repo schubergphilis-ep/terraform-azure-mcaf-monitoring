@@ -43,6 +43,8 @@ module "storage_account" {
   account_kind                      = "StorageV2"
   access_tier                       = var.storage_account.access_tier
   infrastructure_encryption_enabled = var.storage_account.infrastructure_encryption_enabled
+  versioning_enabled                = false
+  change_feed_enabled               = false
   enable_cmk_encryption             = true
   cmk_key                           = { key_vault_key_id = var.storage_account.cmk_key_vault_key_id }
   system_assigned_identity_enabled  = var.storage_account.system_assigned_identity_enabled
