@@ -45,15 +45,20 @@ module "storage_account" {
   infrastructure_encryption_enabled = var.storage_account.infrastructure_encryption_enabled
   enable_cmk_encryption             = true
   cmk_key                           = { key_vault_key_id = var.storage_account.cmk_key_vault_key_id }
-  system_assigned_identity_enabled  = var.storage_account.system_assigned_identity_enabled
+  system_assigned_identity_enabled  = false
   user_assigned_identities          = [azurerm_user_assigned_identity.storage_account_mid[0].id] // Note: The first identity is also always used for key vault access
-  immutability_policy               = var.storage_account.immutability_policy
-  network_configuration             = var.storage_account.network_configuration
-  storage_management_policy         = var.storage_account.storage_management_policy
+  immutability_policy = {
+    state                         = "Unlocked" # Allow for changes in retention period
+    allow_protected_append_writes = true
+    period_since_creation_in_days = var.storage_account.immutability_policy != null ? var.storage_account.immutability_policy.period_since_creation_in_days : var.storage_account.storage_management_policy.delete_after_days
+  }
+  network_configuration     = var.storage_account.network_configuration
+  storage_management_policy = var.storage_account.storage_management_policy
 
   # Prevent high storage cost by disabling change feed and versioning:
   change_feed_enabled = false
   versioning_enabled  = false
+
 
   tags = merge(
     var.tags,
