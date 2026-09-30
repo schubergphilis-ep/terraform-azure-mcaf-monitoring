@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [3.0.0](https://github.com/schubergphilis-ep/terraform-azure-mcaf-monitoring/compare/v2.1.0...v3.0.0) (2026-09-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* Disable change feed and versioning on monitoring storage account ([#14](https://github.com/schubergphilis-ep/terraform-azure-mcaf-monitoring/issues/14))
+
+### 🐛 Fixes
+
+* Disable change feed and versioning on monitoring storage account ([#14](https://github.com/schubergphilis-ep/terraform-azure-mcaf-monitoring/issues/14)) ([297f585](https://github.com/schubergphilis-ep/terraform-azure-mcaf-monitoring/commit/297f58537ce838933b97256e6255a59704731632))
+
 ## [2.1.0](https://github.com/schubergphilis-ep/terraform-azure-mcaf-monitoring/compare/v2.0.1...v2.1.0) (2026-08-18)
 
 
