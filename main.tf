@@ -50,6 +50,11 @@ module "storage_account" {
   immutability_policy               = var.storage_account.immutability_policy
   network_configuration             = var.storage_account.network_configuration
   storage_management_policy         = var.storage_account.storage_management_policy
+
+  # Prevent high storage cost by disabling change feed and versioning:
+  change_feed_enabled = false
+  versioning_enabled  = false
+
   tags = merge(
     var.tags,
     var.storage_account.tags
