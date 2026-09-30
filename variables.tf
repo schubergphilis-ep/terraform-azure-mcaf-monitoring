@@ -40,22 +40,19 @@ variable "storage_account" {
     account_replication_type                  = optional(string, "GRS")
     access_tier                               = optional(string, "Cool")
     infrastructure_encryption_enabled         = optional(bool, true)
-    cmk_key_vault_key_id                      = optional(string, null)
-    cmk_key_vault_key_resource_versionless_id = optional(string, null)
-    system_assigned_identity_enabled          = optional(bool, true)
+    cmk_key_vault_key_id                      = string
+    cmk_key_vault_key_resource_versionless_id = string
+    storage_management_policy = object({
+      blob_delete_retention_days      = number
+      container_delete_retention_days = number
+      move_to_cool_after_days         = optional(number)
+      move_to_cold_after_days         = number
+      move_to_archive_after_days      = number
+      delete_after_days               = number
+    })
     immutability_policy = optional(object({
-      state                         = optional(string, "Unlocked")
-      allow_protected_append_writes = optional(bool, true)
-      period_since_creation_in_days = optional(number, 14)
-    }), null)
-    storage_management_policy = optional(object({
-      blob_delete_retention_days      = optional(number, 90)
-      container_delete_retention_days = optional(number, 90)
-      move_to_cool_after_days         = optional(number, null)
-      move_to_cold_after_days         = optional(number, null)
-      move_to_archive_after_days      = optional(number, null)
-      delete_after_days               = optional(number, null)
-    }), {})
+      period_since_creation_in_days = number
+    }))
     network_configuration = optional(object({
       https_traffic_only_enabled      = optional(bool, true)
       allow_nested_items_to_be_public = optional(bool, false)
