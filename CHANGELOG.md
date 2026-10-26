@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [3.0.1](https://github.com/schubergphilis-ep/terraform-azure-mcaf-monitoring/compare/v3.0.0...v3.0.1) (2026-10-26)
+
+
+### 🐛 Fixes
+
+* Enable versioning as it is required for immutability policies ([#17](https://github.com/schubergphilis-ep/terraform-azure-mcaf-monitoring/issues/17)) ([9ed4ef3](https://github.com/schubergphilis-ep/terraform-azure-mcaf-monitoring/commit/9ed4ef39ca78d8b6bbb286089b922c26cd5cb7da))
+
 ## [3.0.0](https://github.com/schubergphilis-ep/terraform-azure-mcaf-monitoring/compare/v2.1.0...v3.0.0) (2026-09-30)
 
 
