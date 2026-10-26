@@ -48,16 +48,16 @@ module "storage_account" {
   system_assigned_identity_enabled  = false
   user_assigned_identities          = [azurerm_user_assigned_identity.storage_account_mid[0].id] // Note: The first identity is also always used for key vault access
   immutability_policy = {
-    state                         = "Unlocked" # Allow for changes in retention period
+    state                         = "Unlocked"
     allow_protected_append_writes = true
     period_since_creation_in_days = var.storage_account.immutability_policy != null ? var.storage_account.immutability_policy.period_since_creation_in_days : var.storage_account.storage_management_policy.delete_after_days
   }
   network_configuration     = var.storage_account.network_configuration
   storage_management_policy = var.storage_account.storage_management_policy
 
-  # Prevent high storage cost by disabling change feed and versioning:
   change_feed_enabled = false
-  versioning_enabled  = false
+
+  versioning_enabled = true
 
 
   tags = merge(
