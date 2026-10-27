@@ -50,10 +50,9 @@ module "storage_account" {
   immutability_policy = {
     state                         = "Unlocked"
     allow_protected_append_writes = true
-    period_since_creation_in_days = var.storage_account.immutability_policy != null ? var.storage_account.immutability_policy.period_since_creation_in_days : var.storage_account.storage_management_policy.delete_after_days
+    period_since_creation_in_days = var.storage_account.storage_management_policy.delete_after_days
   }
   network_configuration     = var.storage_account.network_configuration
-  storage_management_policy = var.storage_account.storage_management_policy
 
   change_feed_enabled = false
 
@@ -66,6 +65,59 @@ module "storage_account" {
   )
 
   depends_on = [azurerm_role_assignment.storage_account_key_vault_crypto_user]
+}
+
+resource "azurerm_storage_container" "container" {
+  for_each              = var.storage_account.containers
+  name                  = each.key
+  storage_account_id    = module.storage_account[0].id
+  container_access_type = "private"
+}
+
+resource "azurerm_storage_management_policy" "storage_account" {
+  storage_account_id = module.storage_account[0].id
+  rule {
+    name    = "Default storage management policy"
+    enabled = true
+    filters {
+      blob_types = ["blockBlob"]
+    }
+    actions {
+      base_blob {
+        tier_to_cool_after_days_since_modification_greater_than = var.storage_account.storage_management_policy.move_to_cool_after_days
+        tier_to_cold_after_days_since_creation_greater_than     = var.storage_account.storage_management_policy.move_to_cold_after_days
+        tier_to_archive_after_days_since_creation_greater_than  = var.storage_account.storage_management_policy.move_to_archive_after_days
+        delete_after_days_since_modification_greater_than       = var.storage_account.storage_management_policy.delete_after_days
+      }
+    }
+  }
+
+  dynamic "rule" {
+    for_each = azurerm_storage_container.container
+    content {
+      name    = "Storage management policy for ${rule.value.name}"
+      enabled = true
+      filters {
+        blob_types   = ["blockBlob"]
+        prefix_match = ["${rule.value.name}/"]
+      }
+      actions {
+        base_blob {
+          tier_to_cool_after_days_since_modification_greater_than = var.storage_account.containers[rule.key].storage_management_policy.move_to_cool_after_days
+          tier_to_cold_after_days_since_creation_greater_than     = var.storage_account.containers[rule.key].storage_management_policy.move_to_cold_after_days
+          tier_to_archive_after_days_since_creation_greater_than  = var.storage_account.containers[rule.key].storage_management_policy.move_to_archive_after_days
+          delete_after_days_since_modification_greater_than       = var.storage_account.containers[rule.key].storage_management_policy.delete_after_days
+        }
+      }
+    }
+  }
+}
+
+resource "azurerm_storage_container_immutability_policy" "containers" {
+  for_each                              = azurerm_storage_container.container
+  immutability_period_in_days           = var.storage_account.containers[each.key].storage_management_policy.delete_after_days
+  storage_container_resource_manager_id = each.value.resource_manager_id
+  protected_append_writes_enabled       = true # Specifically not `protected_append_writes_all_enabled` to ensure this is only set for AppendBlobs
 }
 
 resource "azurerm_log_analytics_data_export_rule" "this" {

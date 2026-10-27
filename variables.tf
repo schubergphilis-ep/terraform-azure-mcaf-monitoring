@@ -50,9 +50,6 @@ variable "storage_account" {
       move_to_archive_after_days      = number
       delete_after_days               = number
     })
-    immutability_policy = optional(object({
-      period_since_creation_in_days = number
-    }))
     network_configuration = optional(object({
       https_traffic_only_enabled      = optional(bool, true)
       allow_nested_items_to_be_public = optional(bool, false)
@@ -62,6 +59,16 @@ variable "storage_account" {
       ip_rules                        = optional(set(string), [])
       bypass                          = optional(set(string), ["AzureServices"])
     }), {})
+    containers = optional(map(object({
+      storage_management_policy = object({
+        blob_delete_retention_days      = number
+        container_delete_retention_days = number
+        move_to_cool_after_days         = optional(number)
+        move_to_cold_after_days         = number
+        move_to_archive_after_days      = number
+        delete_after_days               = number
+      })
+    })))
     tags = optional(map(string), {})
   })
   description = <<DESCRIPTION
@@ -74,20 +81,23 @@ variable "storage_account" {
     - `account_replication_type` - (Optional) The replication type for the storage account. Defaults to `GRS` (Geo-Redundant Storage) because archive tier only supports LRS, GRS and RAGRS.
     - `access_tier` - (Optional) The access tier for blobs in the storage account. Defaults to `Cool`.
     - `infrastructure_encryption_enabled` - (Optional) Specifies whether infrastructure encryption is enabled. Defaults to true.
-    - `cmk_key_vault_id` - (Optional) The ID of the Key Vault containing the customer-managed key. Defaults to null.
-    - `cmk_key_name` - (Optional) The name of the customer-managed key in the Key Vault. Defaults to null.
-    - `system_assigned_identity_enabled` - (Optional) Whether a system-assigned identity is enabled. Defaults to false.
-    - `immutability_policy` - (Optional) Immutability policy configuration. If undefined will not create a Immutability Policy
-      - `state` - (Optional) The state of the immutability policy. Defaults to `Unlocked`.
-      - `allow_protected_append_writes` - (Optional) Whether protected append writes are allowed. Defaults to true.
-      - `period_since_creation_in_days` - (Optional) The immutability period in days. Defaults to 14 days.
-    - `storage_management_policy` - (Optional) storage management policy and retention settings configuration, if all move_to_* or delete_after_days inputs are null does not create a storage management policy.
-      - `blob_delete_retention_days` - (Optional) Retention days for blob deletion. Defaults to 90 days.
-      - `container_delete_retention_days` - (Optional) Retention days for container deletion. Defaults to 90 days.
+    - `cmk_key_vault_key_id` - (Required) The ID of the Key Vault key used as customer-managed key.
+    - `cmk_key_vault_key_resource_versionless_id` - (Required) The versionless resource ID of the Key Vault key used as customer-managed key.
+    - `storage_management_policy` - (Required) Default storage management policy and retention settings, applied to all containers that are not configured in `containers`.
+      - `blob_delete_retention_days` - (Required) Retention days for blob deletion.
+      - `container_delete_retention_days` - (Required) Retention days for container deletion.
       - `move_to_cool_after_days` - (Optional) Days to wait before moving data to the cool tier. Defaults to null.
-      - `move_to_cold_after_days` - (Optional) Days to wait before moving data to the cold tier. Defaults to null.
-      - `move_to_archive_after_days` - (Optional) Days to wait before moving data to the archive tier. Defaults to null.
-      - `delete_after_days` - (Optional) Days after which data should be deleted. Defaults to null.
+      - `move_to_cold_after_days` - (Required) Days to wait before moving data to the cold tier.
+      - `move_to_archive_after_days` - (Required) Days to wait before moving data to the archive tier.
+      - `delete_after_days` - (Required) Days after which data should be deleted.
+    - `containers` - (Optional) A map of containers to pre-create in the storage account, keyed by container name. Each container is created with its own retention and immutability settings, overriding the defaults. This allows for different retention and immutability policies for different kind of logs.
+      - `storage_management_policy` - (Required) Storage management policy and retention settings for the container.
+        - `blob_delete_retention_days` - (Required) Retention days for blob deletion.
+        - `container_delete_retention_days` - (Required) Retention days for container deletion.
+        - `move_to_cool_after_days` - (Optional) Days to wait before moving data to the cool tier. Defaults to null.
+        - `move_to_cold_after_days` - (Required) Days to wait before moving data to the cold tier.
+        - `move_to_archive_after_days` - (Required) Days to wait before moving data to the archive tier.
+        - `delete_after_days` - (Required) Days after which data should be deleted.
     - `network_configuration` - (Optional) Network Configuration, if undefined will only allow private connections.
       - `https_traffic_only_enabled` - (Optional) Allow only HTTPS traffic. Defaults to true.
       - `allow_nested_items_to_be_public` - (Optional) If nested items can be public. Defaults to false.
